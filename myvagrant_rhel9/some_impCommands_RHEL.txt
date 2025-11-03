@@ -1,0 +1,23 @@
+=======   Commands to execute on a master after creating vagrant cluster for the first time    ==========
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config 
+
+
+=======   command to run a cluster on native linux 	===========
+scp root@172.16.16.100:/home/vagrant/.kube/config $HOME/.kube/config
+
+==========	commands to install vagrant =============
+
+sudo yum install -y yum-utils
+sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+sudo yum -y install vagrant
+sudo usermod -a -G vboxusers $USER
+groups $USER
+
+
+
+==========	command to install kernel-header 	==========
+
+sudo yum install -y "kernel-devel-$(uname -r)"

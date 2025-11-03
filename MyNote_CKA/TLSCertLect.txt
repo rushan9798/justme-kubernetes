@@ -1,0 +1,16 @@
+Symmetric Encryption - 
+To encrypt & decrypt the data/file/username-password the same key is used..
+
+Asymmetric Encryption - (Private & Public Keys)
+To encrypt private key is used & to decrypt another public key is used
+
+========================
+
+openssl genrsa -out admin.key 2048
+-OP->>   admin.key
+
+openssl req -new -key admin.key -subj "/CN=kube-admin" -out admin.csr
+-OP->>	admin.csr
+
+openssl x509 -req -in admin.csr --CA ca.crt -CAkey ca.key -out admin.crt
+-OP->> 	admin.crt

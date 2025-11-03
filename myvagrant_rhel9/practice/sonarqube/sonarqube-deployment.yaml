@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarqube
+  namespace: sonarqube
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonarqube
+  template:
+    metadata:
+      labels:
+        app: sonarqube
+    spec:
+      containers:
+        - name: sonarqube
+          image: sonarqube:lts
+          env:
+            - name: SONAR_JDBC_URL
+              value: jdbc:postgresql://sonarqube-postgres:5432/sonarqube
+            - name: SONAR_JDBC_USERNAME
+              value: sonarqube
+            - name: SONAR_JDBC_PASSWORD
+              value: sonarqube
+          ports:
+            - containerPort: 9000
+          volumeMounts:
+            - name: sonarqube-storage
+              mountPath: /opt/sonarqube/data
+            - name: sonarqube-extensions
+              mountPath: /opt/sonarqube/extensions
+            - name: sonarqube-bundled-plugins
+              mountPath: /opt/sonarqube/bundled-plugins
+      volumes:
+        - name: sonarqube-storage
+          persistentVolumeClaim:
+            claimName: sonarqube-pvc
+        - name: sonarqube-extensions
+          persistentVolumeClaim:
+            claimName: sonarqube-extensions-pvc
+        - name: sonarqube-bundled-plugins
+          persistentVolumeClaim:
+            claimName: sonarqube-bundled-plugins-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarqube
+  namespace: sonarqube
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 9000
+      targetPort: 9000
+  selector:
+    app: sonarqube
+

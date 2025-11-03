@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nginx
+  name: db
+  namespace: example
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ubuntunginx
+  template:
+    metadata:
+      labels:
+        app: ubuntunginx
+    spec:
+      containers:
+      - image: nginx
+        name: ubnginx
+      nodeSelector:
+        disk: ssd

@@ -1,0 +1,19 @@
+apiVersion: apiserver.config.k8s.io/v1
+kind: EncryptionConfiguration
+resources:
+  - resources:
+      - secrets
+    providers:
+      - aescbc:  # AES-CBC encryption
+          keys:
+            - name: key1
+              secret: 9dtcA9uSlYQf3QyyvhRJWBr0Sp3gJv0sR9paPAGHb1w=
+      - aesgcm:  # AES-GCM encryption
+          keys:
+            - name: key2
+              secret: 4aXxuO+43YwZpbMgEs200g==
+      - secretbox:  # Secretbox encryption
+          keys:
+            - name: key3
+              secret: cP1c4SarukRUVIxfRG880hbYm1Agofos+jk9ZUTmuVE=
+      - identity: {}  # No encryption, fallback to plaintext

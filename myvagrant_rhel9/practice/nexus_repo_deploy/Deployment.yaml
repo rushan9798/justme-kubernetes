@@ -1,0 +1,53 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nexus
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexus
+  namespace: nexus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+        app: nexus-server
+  template:
+    metadata:
+      labels:
+        app: nexus-server
+    spec:
+      containers:
+        - name: dind-nexus
+          image: docker:20.10-dind-rootless
+          securityContext:
+            privileged: true # Privilege is required for Docker-in-Docker
+          ports:
+            - containerPort: 2375
+          env:
+            - name: DOCKER_TLS_CERTDIR
+              value: ""
+        - name: nexus
+          image: sonatype/nexus3:latest
+          env:
+          - name: MAX_HEAP
+            value: "800m"
+          - name: MIN_HEAP
+            value: "300m"
+          resources:
+            limits:
+              memory: "1500Mi"
+              cpu: "1000m"
+            requests:
+              memory: "1200Mi"
+              cpu: "800m"
+          ports:
+            - containerPort: 8081
+          volumeMounts:
+            - name: nexus-data
+              mountPath: /nexus-data
+      volumes:
+        - name: nexus-data
+          emptyDir: {} 

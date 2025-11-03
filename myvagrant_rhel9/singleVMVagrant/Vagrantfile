@@ -1,0 +1,15 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "generic/ubuntu2204" # Ubuntu 18.04 LTS 64-bit box
+  config.vm.define "UbuntuJenkins" do |node|
+    
+#    node.vm.box               = VAGRANT_BOX
+    node.vm.network "private_network", ip: "172.16.16.110"
+    node.vm.provider "virtualbox" do |vb|
+      vb.memory = 4096 # Set memory to 512MB
+      vb.cpus = 3 # Set CPU to 1
+    end
+  end
+end

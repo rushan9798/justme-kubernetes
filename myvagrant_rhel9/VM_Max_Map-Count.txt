@@ -1,0 +1,15 @@
+ERROR: [1] bootstrap checks failed. You must address the points described in the following [1] lines before starting Elasticsearch.
+bootstrap check failure [1] of [1]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+
+The error you're encountering is due to Elasticsearch requiring a higher vm.max_map_count setting on your system. This setting controls the maximum number of memory map areas a process may have, which is especially important for applications like Elasticsearch that use a lot of memory-mapped files.
+
+To fix this issue, you need to increase the vm.max_map_count to at least 262144. Here’s how to do it:
+===========================
+Temporarily Set the Parameter: To test the setting immediately without rebooting, run this command:
+sudo sysctl -w vm.max_map_count=262144
+===========================
+Persist the Change: To make the change permanent, add the setting to the /etc/sysctl.conf file:
+echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
+===========================
+Apply the Changes: Reload the sysctl configuration to apply the changes without rebooting:
+sudo sysctl -p

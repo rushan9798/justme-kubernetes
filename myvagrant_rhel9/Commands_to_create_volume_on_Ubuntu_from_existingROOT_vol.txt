@@ -1,0 +1,46 @@
+Steps to Resolve:
+1. Unmount the Filesystem:
+Since /dev/nvme0n1p5 is mounted as / (your root partition), you cannot unmount it directly without affecting the system. Therefore, the best approach is to shrink the filesystem or use the remaining available space on the partition for LVM without affecting your root filesystem.
+
+We will skip creating a new partition with LVM on this root partition since it's already mounted and used by the system.
+
+Instead, use the available space in /dev/nvme0n1p5 to create a file-based volume or directory for /app.
+
+Alternative: Use a File-Based Volume for /app
+
+
+
+Step 1: Create a 70 GB file within the existing filesystem.
+We can create a file that acts as a volume and mount it to /app.
+## sudo fallocate -l 70G /appfile
+
+Step 2: Format the file as ext4:
+## sudo mkfs.ext4 /appfile
+
+Step 3: Create the /app directory:
+## sudo mkdir /app
+
+Step 4: Mount the file to /app:
+## sudo mount /appfile /app
+
+Step 5: Verify the mount:
+## df -h /app
+
+Step 6: Make the mount persistent:
+To make sure this mount persists across reboots, you need to add it to /etc/fstab.
+
+Get the UUID of the file-based volume:
+
+## sudo blkid /appfile
+
+Add an entry to /etc/fstab:
+
+## sudo vim /etc/fstab
+Add the following line:
+
+## /appfile /app ext4 defaults 0 2
+
+Final Check
+Once these steps are complete, /app should be mounted with the allocated 70 GB.
+
+Let me know if you face any issues during this process!
